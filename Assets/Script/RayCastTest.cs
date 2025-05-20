@@ -6,9 +6,13 @@ public class PiecePlacer : MonoBehaviour
     public GameObject piecePrefab;
     public Grid grid;
 
-   
-
     private GameObject ghostInstance;
+
+    // 보드 크기 (예: -2 ~ 2 범위 총 5칸)
+    public int boardMinX = -2;
+    public int boardMaxX = 2;
+    public int boardMinY = -2;
+    public int boardMaxY = 2;
 
     void Start()
     {
@@ -25,17 +29,12 @@ public class PiecePlacer : MonoBehaviour
         mouseScreenPos.z = 10f;
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
 
-        Vector3Int rawCellPos = grid.WorldToCell(mouseWorldPos);
+        Vector3Int cellPos = grid.WorldToCell(mouseWorldPos);
+        Vector3 cellCenterPos = grid.GetCellCenterWorld(cellPos);
 
-        int boardCellX = rawCellPos.x / 2;
-        int boardCellY = rawCellPos.y / 2;
-
-        Vector3Int snappedCellPos = new Vector3Int(boardCellX * 2, boardCellY * 2, 0);
-        Vector3 cellCenterPos = grid.GetCellCenterWorld(snappedCellPos) + new Vector3(1f, 1f, 0f);
-
-        // 보드 영역 밖이면 고스트 숨기기
-        if (boardCellX < -5 || boardCellX > 4||
-            boardCellY < -4 || boardCellY > 5)
+        // 보드 범위 밖이면 숨김
+        if (cellPos.x < boardMinX || cellPos.x > boardMaxX ||
+            cellPos.y < boardMinY || cellPos.y > boardMaxY)
         {
             ghostInstance.SetActive(false);
             return;
@@ -46,9 +45,6 @@ public class PiecePlacer : MonoBehaviour
         }
 
         ghostInstance.transform.position = cellCenterPos;
-
-        //if (ghostInstance != null)
-        //    ghostInstance.transform.position = cellCenterPos;
 
         if (Input.GetMouseButtonDown(0))
         {
