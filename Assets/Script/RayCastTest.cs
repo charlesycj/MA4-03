@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PiecePlacer : MonoBehaviour
 {
@@ -8,7 +9,9 @@ public class PiecePlacer : MonoBehaviour
 
     private GameObject ghostInstance;
 
-    // 보드 크기 (예: -2 ~ 2 범위 총 5칸)
+    private HashSet<Vector3Int> placedPositions = new HashSet<Vector3Int>();
+
+    //보드의 크기 5*5
     public int boardMinX = -2;
     public int boardMaxX = 2;
     public int boardMinY = -2;
@@ -29,6 +32,8 @@ public class PiecePlacer : MonoBehaviour
         mouseScreenPos.z = 10f;
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
 
+        Vector3Int snappedCellPos = grid.WorldToCell(mouseWorldPos);
+
         Vector3Int cellPos = grid.WorldToCell(mouseWorldPos);
         Vector3 cellCenterPos = grid.GetCellCenterWorld(cellPos);
 
@@ -45,12 +50,20 @@ public class PiecePlacer : MonoBehaviour
         }
 
         ghostInstance.transform.position = cellCenterPos;
-
         if (Input.GetMouseButtonDown(0))
         {
-            Instantiate(piecePrefab, cellCenterPos, Quaternion.identity);
+            if (!placedPositions.Contains(snappedCellPos))
+            {
+                Instantiate(piecePrefab, cellCenterPos, Quaternion.identity);
+                placedPositions.Add(snappedCellPos);
+            }
+            else
+            {
+                Debug.Log("이미 말이 놓여 있는 위치입니다.");
+            }
         }
     }
+
 
     void SetGhostTransparency(float alpha)
     {
