@@ -29,16 +29,16 @@ public class PiecePlacer : MonoBehaviour
 
         Vector3Int cellPos = grid.WorldToCell(mouseWorldPos);
 
-        if (IsWithinBoard(cellPos))
+        if (IsWithinBoard(cellPos)&&turnManager.isGameEnd==false)
         {
             ghostInstance.SetActive(true);
             ghostInstance.transform.position = grid.GetCellCenterWorld(cellPos);
 
-            if (Input.GetMouseButtonDown(0)) // Player1
+            if (Input.GetMouseButtonDown(0)&&turnManager.isGameEnd==false) // Player1
             {
                 turnManager.SubmitMove(TurnManager.Player.Player1, cellPos);
             }
-            else if (Input.GetMouseButtonDown(1)) // Player2
+            else if (Input.GetMouseButtonDown(1)&&turnManager.isGameEnd==false) // Player2
             {
                 turnManager.SubmitMove(TurnManager.Player.Player2, cellPos);
             }
