@@ -20,9 +20,13 @@ public class PiecePlacer : MonoBehaviour
     void Update()
     {
         Vector3 mouseScreenPos = Input.mousePosition;
-        mouseScreenPos.z = 10f;
+
+        // 카메라의 Z값을 기준으로 보정
+        mouseScreenPos.z = -Camera.main.transform.position.z;
 
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
+        mouseWorldPos.z = 0f; // 2D이므로 Z 고정
+
         Vector3Int cellPos = grid.WorldToCell(mouseWorldPos);
 
         if (IsWithinBoard(cellPos))
@@ -44,6 +48,7 @@ public class PiecePlacer : MonoBehaviour
             ghostInstance.SetActive(false);
         }
     }
+
 
     bool IsWithinBoard(Vector3Int pos)
     {
