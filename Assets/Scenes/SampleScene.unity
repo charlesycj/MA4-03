@@ -32176,6 +32176,54 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!1 &368712503
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 368712505}
+  - component: {fileID: 368712504}
+  m_Layer: 0
+  m_Name: TurnSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &368712504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 368712503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73beaa08a30d9454f891612ede903d1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackOwner: 0
+  piecePrefabP1: {fileID: 196866, guid: a7fc509eae4faf945a90be82d506e744, type: 3}
+  piecePrefabP2: {fileID: 125018, guid: 74bd95f76d7ba1b4f96f846886615aa4, type: 3}
+  grid: {fileID: 1137531501}
+--- !u!4 &368712505
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 368712503}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.04135, y: -0, z: 0.89747}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -63793,7 +63841,7 @@ GameObject:
   - component: {fileID: 2023845417}
   - component: {fileID: 2023845416}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: PlaceSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63811,13 +63859,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44c591fff71243e4280987ed7e855116, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ghostPrefab: {fileID: 196866, guid: a71fd906a2159e247ab4d632e46947db, type: 3}
-  piecePrefab: {fileID: 190264, guid: cd05c23b470229c44a8d53d6e86225f6, type: 3}
   grid: {fileID: 1137531501}
-  boardMinX: -2
-  boardMaxX: 2
-  boardMinY: -2
-  boardMaxY: 2
+  ghostPrefab: {fileID: 196866, guid: c41746174df69214d9f58b5f0558b73d, type: 3}
+  turnManager: {fileID: 368712504}
 --- !u!4 &2023845417
 Transform:
   m_ObjectHideFlags: 0
@@ -63842,3 +63886,4 @@ SceneRoots:
   - {fileID: 68962695}
   - {fileID: 1137531502}
   - {fileID: 2023845417}
+  - {fileID: 368712505}

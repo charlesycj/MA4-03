@@ -1,21 +1,12 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class PiecePlacer : MonoBehaviour
 {
-    public GameObject ghostPrefab;
-    public GameObject piecePrefab;
     public Grid grid;
+    public GameObject ghostPrefab;
+    public TurnManager turnManager;
 
     private GameObject ghostInstance;
-
-    private HashSet<Vector3Int> placedPositions = new HashSet<Vector3Int>();
-
-    //보드의 크기 5*5
-    public int boardMinX = -2;
-    public int boardMaxX = 2;
-    public int boardMinY = -2;
-    public int boardMaxY = 2;
 
     void Start()
     {
@@ -30,40 +21,34 @@ public class PiecePlacer : MonoBehaviour
     {
         Vector3 mouseScreenPos = Input.mousePosition;
         mouseScreenPos.z = 10f;
+
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
-
-        Vector3Int snappedCellPos = grid.WorldToCell(mouseWorldPos);
-
         Vector3Int cellPos = grid.WorldToCell(mouseWorldPos);
-        Vector3 cellCenterPos = grid.GetCellCenterWorld(cellPos);
 
-        // 보드 범위 밖이면 숨김
-        if (cellPos.x < boardMinX || cellPos.x > boardMaxX ||
-            cellPos.y < boardMinY || cellPos.y > boardMaxY)
+        if (IsWithinBoard(cellPos))
         {
-            ghostInstance.SetActive(false);
-            return;
+            ghostInstance.SetActive(true);
+            ghostInstance.transform.position = grid.GetCellCenterWorld(cellPos);
+
+            if (Input.GetMouseButtonDown(0)) // Player1
+            {
+                turnManager.SubmitMove(TurnManager.Player.Player1, cellPos);
+            }
+            else if (Input.GetMouseButtonDown(1)) // Player2
+            {
+                turnManager.SubmitMove(TurnManager.Player.Player2, cellPos);
+            }
         }
         else
         {
-            ghostInstance.SetActive(true);
-        }
-
-        ghostInstance.transform.position = cellCenterPos;
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (!placedPositions.Contains(snappedCellPos))
-            {
-                Instantiate(piecePrefab, cellCenterPos, Quaternion.identity);
-                placedPositions.Add(snappedCellPos);
-            }
-            else
-            {
-                Debug.Log("이미 말이 놓여 있는 위치입니다.");
-            }
+            ghostInstance.SetActive(false);
         }
     }
 
+    bool IsWithinBoard(Vector3Int pos)
+    {
+        return pos.x >= -2 && pos.x <= 2 && pos.y >= -2 && pos.y <= 2;
+    }
 
     void SetGhostTransparency(float alpha)
     {
