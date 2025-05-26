@@ -3,7 +3,8 @@ using UnityEngine;
 public class PiecePlacer : MonoBehaviour
 {
     public Grid grid;
-    public GameObject ghostPrefab;
+    public GameObject ghostPrefabp1;
+    public GameObject ghostPrefabp2;
     public TurnManager turnManager;
 
     private GameObject ghostInstance;
@@ -13,7 +14,7 @@ public class PiecePlacer : MonoBehaviour
         if (grid == null)
             grid = FindObjectOfType<Grid>();
 
-        ghostInstance = Instantiate(ghostPrefab);
+        ghostInstance = Instantiate(ghostPrefabp1);
         SetGhostTransparency(0.5f);
     }
 

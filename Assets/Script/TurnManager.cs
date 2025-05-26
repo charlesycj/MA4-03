@@ -54,30 +54,39 @@ public class TurnManager : MonoBehaviour
         Vector3Int pos1 = player1PlannedMove.Value;
         Vector3Int pos2 = player2PlannedMove.Value;
 
-        if (pos1 == pos2)
+        bool isAttackSuccess = pos1 == pos2;
+        
+        if (isAttackSuccess)
         {
             if (isPlayer1Attacker)
                 PlacePiece(piecePrefabP1, pos1);
             else
                 PlacePiece(piecePrefabP2, pos2);
+
+            Debug.Log("공격 성공! 공격권 유지");
         }
         else
         {
             PlacePiece(piecePrefabP1, pos1);
             PlacePiece(piecePrefabP2, pos2);
+            
+            Debug.Log("공격 실패. 공격권 전환");
+            isPlayer1Attacker = !isPlayer1Attacker;
         }
 
         player1PlannedMove = null;
         player2PlannedMove = null;
-        isPlayer1Attacker = !isPlayer1Attacker;
+        
 
+        int scoreP1 = CalculateScore(Player.Player1, occupiedPositions);
+        int scoreP2 = CalculateScore(Player.Player2, occupiedPositions);
+        Debug.Log($"[턴 종료 후 점수] Player1: {scoreP1}점 / Player2: {scoreP2}점");
+        
         if (occupiedPositions.Count >= 25)
         {
             Debug.Log("게임 종료! 모든 셀에 돌이 놓였습니다.");
             isGameEnd = true;
-
-            int scoreP1 = CalculateScore(Player.Player1, occupiedPositions);
-            int scoreP2 = CalculateScore(Player.Player2, occupiedPositions);
+            
 
             Debug.Log($"Player1 점수: {scoreP1}");
             Debug.Log($"Player2 점수: {scoreP2}");
@@ -159,18 +168,6 @@ public int CalculateScore(Player player, Dictionary<Vector3Int, Player> board)
     return totalScore;
 }
 
-
-// // 줄을 고유하게 식별하기 위한 문자열 생성 함수
-//     private string GetLineKey(List<Vector3Int> positions)
-//     {
-//         positions.Sort((a, b) =>
-//         {
-//             int cmpY = a.y.CompareTo(b.y);
-//             return cmpY != 0 ? cmpY : a.x.CompareTo(b.x);
-//         });
-//
-//         return string.Join("-", positions.Select(p => $"{p.x},{p.y}"));
-//     }
 
     private void PlacePiece(GameObject prefab, Vector3Int cell)
     {
