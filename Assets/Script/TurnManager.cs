@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 public class TurnManager : MonoBehaviour
 {
@@ -10,7 +11,13 @@ public class TurnManager : MonoBehaviour
     public GameObject piecePrefabP2;
     public Grid grid;
     
-
+    public TMPro.TextMeshProUGUI score1;
+    public TMPro.TextMeshProUGUI score2;
+    public TMPro.TextMeshProUGUI wintext;
+    
+    public Toggle attackertoggle1;
+    public Toggle attackertoggle2;
+    
     private Vector3Int? player1PlannedMove = null;
     private Vector3Int? player2PlannedMove = null;
     private bool isPlayer1Attacker = true;
@@ -20,6 +27,8 @@ public class TurnManager : MonoBehaviour
 
     public ScoreManager scoreManager;
 
+    
+    
     private void Awake()
     {
         scoreManager = FindObjectOfType<ScoreManager>();
@@ -90,6 +99,9 @@ public class TurnManager : MonoBehaviour
         int scoreP1 = scoreManager.CalculateScore(Player.Player1, occupiedPositions);
         int scoreP2 = scoreManager.CalculateScore(Player.Player2, occupiedPositions);
         Debug.Log($"[턴 종료 후 점수] Player1: {scoreP1} / Player2: {scoreP2}");
+        score1.SetText("score : " + scoreP1);
+        score2.SetText("score : " + scoreP2);
+        
 
         if (occupiedPositions.Count >= 25)
         {
@@ -97,7 +109,13 @@ public class TurnManager : MonoBehaviour
             isGameEnd = true;
 
             Debug.Log($"최종 점수 - Player1: {scoreP1}, Player2: {scoreP2}");
+            if (scoreP1 > scoreP2) wintext.SetText("Winner is Player1");
+            else wintext.SetText("Winner is Player2");
         }
+
+        attackertoggle1.interactable = isPlayer1Attacker;
+        attackertoggle2.interactable = !isPlayer1Attacker;
+        
     }
 
     private void PlacePiece(GameObject prefab, Vector3Int cell)
