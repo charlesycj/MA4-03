@@ -1,15 +1,15 @@
+using Fusion;
 using UnityEngine;
 
-public class PiecePlacer : MonoBehaviour
+public class PiecePlacer : NetworkBehaviour
 {
     public Grid grid;
     public GameObject ghostPrefabp1;
-    public GameObject ghostPrefabp2;
     public TurnManager turnManager;
 
     private GameObject ghostInstance;
 
-    void Start()
+    public override void Spawned() // Fusion 방식의 초기화 메서드
     {
         if (grid == null)
             grid = FindObjectOfType<Grid>();
@@ -20,28 +20,26 @@ public class PiecePlacer : MonoBehaviour
 
     void Update()
     {
-        Vector3 mouseScreenPos = Input.mousePosition;
+        if (turnManager == null || turnManager.isGameEnd)
+            return;
 
-        // 카메라의 Z값을 기준으로 보정
+        Vector3 mouseScreenPos = Input.mousePosition;
         mouseScreenPos.z = -Camera.main.transform.position.z;
 
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
-        mouseWorldPos.z = 0f; // 2D이므로 Z 고정
+        mouseWorldPos.z = 0f;
 
         Vector3Int cellPos = grid.WorldToCell(mouseWorldPos);
 
-        if (IsWithinBoard(cellPos)&&turnManager.isGameEnd==false)
+        if (IsWithinBoard(cellPos))
         {
             ghostInstance.SetActive(true);
             ghostInstance.transform.position = grid.GetCellCenterWorld(cellPos);
 
-            if (Input.GetMouseButtonDown(0)&&turnManager.isGameEnd==false) // Player1
+            if (Input.GetMouseButtonDown(0))
             {
-                turnManager.SubmitMove(TurnManager.Player.Player1, cellPos);
-            }
-            else if (Input.GetMouseButtonDown(1)&&turnManager.isGameEnd==false) // Player2
-            {
-                turnManager.SubmitMove(TurnManager.Player.Player2, cellPos);
+                // Fusion RPC 방식으로 서버에 말 놓기 요청
+                RPC_SubmitMove(cellPos);
             }
         }
         else
@@ -50,6 +48,11 @@ public class PiecePlacer : MonoBehaviour
         }
     }
 
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_SubmitMove(Vector3Int cellPos, RpcInfo info = default)
+    {
+        turnManager.SubmitMove(turnManager.GetCurrentPlayer(), cellPos);
+    }
 
     bool IsWithinBoard(Vector3Int pos)
     {
